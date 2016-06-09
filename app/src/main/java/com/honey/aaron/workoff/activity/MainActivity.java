@@ -14,11 +14,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.honey.aaron.workoff.R;
 import com.honey.aaron.workoff.adapter.ViewPagerAdapter;
 import com.honey.aaron.workoff.db.WorkTimeSQLiteHelper;
 import com.honey.aaron.workoff.util.TimeSharedPreferences;
 import com.honey.aaron.workoff.util.TimeUtil;
-import com.sds.aaron.workoff.R;
 
 import java.util.Calendar;
 
