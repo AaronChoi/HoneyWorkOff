@@ -7,6 +7,8 @@
     <string name="total_time">업무 시간</string>
     <string name="txt_total_time">%s 업무 중</string>
 
+    <!-- daily work time view -->
+    <string name="daily_work_time">%1$s / %2$s</string>
     <!-- weekly work time view -->
     <string name="weekly_work_day">%1$s/%2$s (%3$s)</string>
 

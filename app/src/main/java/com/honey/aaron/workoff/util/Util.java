@@ -6,6 +6,8 @@ import android.util.Log;
 import com.honey.aaron.workoff.db.WorkTimeSQLiteHelper;
 import com.honey.aaron.workoff.model.WorkDay;
 
+import java.util.Calendar;
+
 public class Util {
     private static final String TAG = Util.class.getSimpleName();
 
@@ -29,6 +31,18 @@ public class Util {
                 "from_time : " + day.getFromTime() +
                 "to_time : " + day.getToTime() +
                 "timestamp : " + day.getTimestamp());
+
+        return day;
+    }
+
+    public static WorkDay makEmptyWorkDay(Calendar cal) {
+        day = new WorkDay();
+        day.setYear(TimeUtil.getYear(cal.getTimeInMillis()));
+        day.setMonth(TimeUtil.getMonth(cal.getTimeInMillis()));
+        day.setWeek(TimeUtil.getWeek(cal.getTimeInMillis()));
+        day.setDay(TimeUtil.getDay(cal.getTimeInMillis()));
+        day.setDate(TimeUtil.getDate(cal.getTimeInMillis()));
+        day.setTimestamp(0);
 
         return day;
     }

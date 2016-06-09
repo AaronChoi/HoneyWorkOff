@@ -27,8 +27,9 @@
         <item name="android:textColor">@color/black_80</item>
     </style>
 
-    <style name="honey_font_19_pinkish_red">
+    <style name="honey_font_19_pinkish_red_bold">
         <item name="android:textSize">19sp</item>
+        <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/colorAccent</item>
     </style>
 
@@ -44,8 +45,8 @@
         <item name="android:textColor">@color/grayish_white</item>
     </style>
 
-    <style name="honey_font_35_grayish_white_bold">
-        <item name="android:textSize">35sp</item>
+    <style name="honey_font_30_grayish_white_bold">
+        <item name="android:textSize">30sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">@color/grayish_white</item>
     </style>

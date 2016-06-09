@@ -158,7 +158,23 @@ public class TimeUtil {
         return cal.getTimeInMillis();
     }
 
-    public static String getDatePeriodForThisWeek(Calendar calendar) {
+    public static String getDatePeriodForThisWeek() {
+        StringBuilder period = new StringBuilder();
+        Calendar calendar = Calendar.getInstance();
+
+        // 일요일 날짜 계산..
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        period.append(getDisplayDateFormat(calendar));
+        // 날짜 구분 기호 삽입
+        period.append(" ~ ");
+        // 토요일 날짜 계산..  ** 변경 - 일~월로 보여주기로 함.. 차후 변경 될 시 참고 --> calendar 는 일요일부터 시작이므로 월~ 일은 7일을 더해서 다음주 일요일을 계산해야 함
+        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+        period.append(getDisplayDateFormat(calendar));
+
+        return period.toString();
+    }
+
+    public static String getDisplayDateFormat(Calendar calendar) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd", Locale.KOREA);
         Date currentTimeZone = calendar.getTime();
         return sdf.format(currentTimeZone);

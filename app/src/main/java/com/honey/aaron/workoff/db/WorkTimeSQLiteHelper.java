@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class WorkTimeSQLiteHelper extends SQLiteOpenHelper {
     private static SQLiteDatabase db;
@@ -43,7 +45,7 @@ public class WorkTimeSQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String sql = "create table " + DB_NAME + "(" +
+        String sql = "create table if not exists " + DB_NAME + "(" +
                 "_id INTEGER primary key autoincrement, " +
                 "year TEXT, " +
                 "month TEXT, " +
@@ -61,8 +63,16 @@ public class WorkTimeSQLiteHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // db = 적용할 db, old = 구버전, new = 신버전
         Log.d("##########", "db upgrade");
-        db.execSQL("drop table if exists " + DB_NAME);
-        onCreate(db);
+        // column 항목 가져오기
+        if(newVersion > oldVersion) {
+            List<String> columns = GetColumns(db, DB_NAME);
+            db.execSQL("ALTER table " + DB_NAME + " RENAME TO 'temp_" + DB_NAME);
+            onCreate(db);
+            columns.retainAll(GetColumns(db, DB_NAME));
+            String cols = join(columns, ",");
+            db.execSQL(String.format("INSERT INTO %s (%s) SELECT %s from temp_%s", DB_NAME, cols, cols, DB_NAME));
+            db.execSQL("drop table if exists 'temp_" + DB_NAME);
+        }
     }
 
     /**
@@ -77,25 +87,27 @@ public class WorkTimeSQLiteHelper extends SQLiteOpenHelper {
      */
     public long insert(String year, String month, String week, String date, String day, String from_time, String timestamp) {
         db = this.getWritableDatabase();
-        values.put("year", year);
-        values.put("month", month);
-        values.put("week", week);
-        values.put("date", date);
-        values.put("day", day);
-        values.put("from_time", from_time);
-        values.put("timestamp", timestamp);
+        values.clear();
+        values.put(COLUMN_YEAR, year);
+        values.put(COLUMN_MONTH, month);
+        values.put(COLUMN_WEEK, week);
+        values.put(COLUMN_DATE, date);
+        values.put(COLUMN_DAY, day);
+        values.put(COLUMN_FROM_TIME, from_time);
+        values.put(COLUMN_TIMESTAMP, timestamp);
         return db.insert(DB_NAME, null, values);
     }
 
     public long update(String year, String month, String date, String to_time) {
         db = this.getWritableDatabase();
+        values.clear();
         values.put("to_time", to_time);
-        return db.update(DB_NAME, values, "year=? and month=? and date=?", new String[]{year, month, date});
+        return db.update(DB_NAME, values, COLUMN_YEAR + "=? and " + COLUMN_MONTH + "=? and " + COLUMN_DATE + "=?", new String[]{year, month, date});
     }
 
     public long delete(String year, String month, String date) {
         db = this.getWritableDatabase();
-        return db.delete(DB_NAME, "year=? and month=? and date=?", new String[]{year, month, date});
+        return db.delete(DB_NAME, COLUMN_YEAR + "=? and " + COLUMN_MONTH + "=? and " + COLUMN_DATE + "=?", new String[]{year, month, date});
     }
 
     /**
@@ -112,29 +124,66 @@ public class WorkTimeSQLiteHelper extends SQLiteOpenHelper {
         ArrayList<String> values = new ArrayList<>();
 
         if(year != null && !"".equals(year)) {
-            where.append("year=? and ");
+            where.append(COLUMN_YEAR);
+            where.append("=? and ");
             values.add(year);
         }
         if(month != null && !"".equals(month)) {
-            where.append("month=? and ");
+            where.append(COLUMN_MONTH);
+            where.append("=? and ");
             values.add(month);
         }
         if(week != null && !"".equals(week)) {
-            where.append("week=? and ");
+            where.append(COLUMN_WEEK);
+            where.append("=? and ");
             values.add(week);
         }
         if(date != null && !"".equals(date)) {
-            where.append("date=?");
+            where.append(COLUMN_DATE);
+            where.append("=?");
             values.add(date);
         } else {
             if(where.length() > 0) where.replace(where.length() - 4, where.length(), "");
         }
 
-        return db.query(DB_NAME, null, where.toString(), values.toArray(new String[values.size()]), null, null, "_id");
+        return db.query(DB_NAME, null, where.toString(), values.toArray(new String[values.size()]), null, null, "_id DESC");
     }
 
     public Cursor selectAll() {
         db = this.getReadableDatabase();
-        return db.query(DB_NAME, null, null, null, null, null, "_id");
+        return db.query(DB_NAME, null, null, null, null, null, null);
+    }
+
+
+    /**
+     * These are for DB upgrade
+     */
+    public static List<String> GetColumns(SQLiteDatabase db, String tableName) {
+        List<String> ar = null;
+        Cursor c = null;
+        try {
+            c = db.rawQuery("select * from " + tableName + " limit 1", null);
+            if (c != null) {
+                ar = new ArrayList<>(Arrays.asList(c.getColumnNames()));
+            }
+        } catch (Exception e) {
+            Log.v(tableName, e.getMessage(), e);
+            e.printStackTrace();
+        } finally {
+            if (c != null)
+                c.close();
+        }
+        return ar;
+    }
+
+    public static String join(List<String> list, String delim) {
+        StringBuilder buf = new StringBuilder();
+        int num = list.size();
+        for (int i = 0; i < num; i++) {
+            if (i != 0)
+                buf.append(delim);
+            buf.append(list.get(i));
+        }
+        return buf.toString();
     }
 }

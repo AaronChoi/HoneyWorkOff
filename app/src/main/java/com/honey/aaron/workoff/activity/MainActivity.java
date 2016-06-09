@@ -127,11 +127,11 @@ public class MainActivity extends AppCompatActivity {
                 calendar.add(Calendar.DATE, -1);
             }
 
-            String year = String.valueOf(calendar.get(Calendar.YEAR));
-            String month = String.valueOf(calendar.get(Calendar.MONTH) + 1);
+            String year = TimeUtil.getYear(calendar.getTimeInMillis());
+            String month = TimeUtil.getMonth(calendar.getTimeInMillis());
             String week = TimeUtil.getWeek(calendar.getTimeInMillis());
-            String date = String.valueOf(calendar.get(Calendar.DATE));
-            String day = String.valueOf(calendar.get(Calendar.DAY_OF_WEEK));
+            String date = TimeUtil.getDate(calendar.getTimeInMillis());
+            String day = TimeUtil.getDay(calendar.getTimeInMillis());
             String time = TimeUtil.getTime(calendar.getTimeInMillis());
 
             /**

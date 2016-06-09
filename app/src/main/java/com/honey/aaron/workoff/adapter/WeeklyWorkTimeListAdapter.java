@@ -8,10 +8,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.honey.aaron.workoff.R;
 import com.honey.aaron.workoff.model.WorkDay;
 import com.honey.aaron.workoff.util.TimeSharedPreferences;
 import com.honey.aaron.workoff.util.TimeUtil;
-import com.sds.aaron.workoff.R;
 
 import java.util.ArrayList;
 
@@ -74,13 +74,14 @@ public class WeeklyWorkTimeListAdapter extends BaseAdapter {
         // work day
         holder.tvWorkDay.setText(String.format(context.getString(R.string.weekly_work_day), item.getMonth(), item.getDate(), item.getDay()));
         // work from time
-        holder.tvFromTime.setText(item.getFromTime());
+        holder.tvFromTime.setText(item.getFromTime() == null || "".equals(item.getFromTime()) ? "-" : item.getFromTime());
         // work to time
-        holder.tvToTime.setText(item.getToTime());
+        holder.tvToTime.setText(TimeUtil.isToday(item.getTimestamp()) && pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ? TimeUtil.getTime(System.currentTimeMillis()) :
+                item.getToTime() == null || "".equals(item.getToTime()) ? "-" : item.getToTime());
         // work total time
-        holder.tvWorkTime.setText(TimeUtil.getTotalWorkTime(item.getTimestamp(),
-                TimeUtil.isToday(item.getTimestamp()) && pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ? System.currentTimeMillis() :
-                        TimeUtil.getMillisecondsFromString(item.getYear(), item.getMonth(), item.getDate(), item.getToTime())));
+        holder.tvWorkTime.setText(item.getTimestamp() == 0 ? "00:00" :
+                TimeUtil.getTotalWorkTime(item.getTimestamp(), TimeUtil.isToday(item.getTimestamp()) && pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ?
+                        System.currentTimeMillis() : TimeUtil.getMillisecondsFromString(item.getYear(), item.getMonth(), item.getDate(), item.getToTime())));
 
         return convertView;
     }

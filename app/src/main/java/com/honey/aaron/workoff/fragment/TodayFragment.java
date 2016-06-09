@@ -6,14 +6,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.honey.aaron.workoff.R;
 import com.honey.aaron.workoff.model.WorkDay;
 import com.honey.aaron.workoff.util.TimeSharedPreferences;
 import com.honey.aaron.workoff.util.TimeUtil;
 import com.honey.aaron.workoff.util.Util;
-import com.sds.aaron.workoff.R;
 
 import java.util.Calendar;
 
@@ -21,10 +20,8 @@ public class TodayFragment extends BaseFragment {
     public static TodayFragment todayFragment;
 
     // views
-    private LinearLayout fromToLayout;
     private TextView tvTodayDate;
-    private TextView tvFromTime;
-    private TextView tvToTime;
+    private TextView tvFromToTime;
     private TextView tvTotalTime;
 
     WorkDay today;
@@ -44,11 +41,9 @@ public class TodayFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_today, container, false);
-        fromToLayout = (LinearLayout) view.findViewById(R.id.from_to_layout);
         tvTodayDate = (TextView) view.findViewById(R.id.tv_today_date);
-        tvFromTime = (TextView) view.findViewById(R.id.tv_from_time);
-        tvToTime = (TextView) view.findViewById(R.id.tv_to_time);
-        tvTotalTime = (TextView) view.findViewById(R.id.tv_work_time);
+        tvFromToTime = (TextView) view.findViewById(R.id.tv_from_to_time);
+        tvTotalTime = (TextView) view.findViewById(R.id.tv_today_work_time);
 
         initLayout();
         return view;
@@ -59,20 +54,11 @@ public class TodayFragment extends BaseFragment {
         // 오늘 날짜를 가져옴
         Calendar cal = Calendar.getInstance();
 
-        Cursor cursor = sqlHelper.select(String.valueOf(cal.get(Calendar.YEAR)), String.valueOf(cal.get(Calendar.MONTH) + 1),
-                String.valueOf(cal.get(Calendar.WEEK_OF_MONTH)), String.valueOf(cal.get(Calendar.DATE)));
+        Cursor cursor = sqlHelper.select(TimeUtil.getYear(cal.getTimeInMillis()), TimeUtil.getMonth(cal.getTimeInMillis()), TimeUtil.getWeek(cal.getTimeInMillis()), TimeUtil.getDate(cal.getTimeInMillis()));
         Log.i(TAG, "cursor : " + cursor.getCount());
 
-        if(cursor.getCount() == 0) { // 오늘 데이터가 없을 경우 날짜만 셋팅
-            today = new WorkDay();
-            today.setYear(String.valueOf(cal.get(Calendar.YEAR)));
-            today.setMonth(String.valueOf(cal.get(Calendar.MONTH) + 1));
-            today.setWeek(String.valueOf(cal.get(Calendar.WEEK_OF_MONTH)));
-            today.setDay(String.valueOf(cal.get(Calendar.DAY_OF_WEEK)));
-            today.setDate(String.valueOf(cal.get(Calendar.DATE)));
-            today.setFromTime("00:00");
-            today.setToTime("00:00");
-            today.setTimestamp(TimeUtil.getMillisecondsFromString(today.getYear(), today.getMonth(), today.getDate(), today.getToTime()));
+        if(cursor.getCount() == 0) { // 오늘 데이터가 없을 경우 빈값을 생성
+            today = Util.makEmptyWorkDay(cal);
         } else {
             while(cursor.moveToNext()) {
                 Log.i(TAG, "cursor not null");
@@ -80,17 +66,17 @@ public class TodayFragment extends BaseFragment {
             }
         }
 
-        tvTodayDate.setText(today.getYear().concat(".").concat(TimeUtil.getMonth(today.getTimestamp())).concat(".").concat(TimeUtil.getDate(today.getTimestamp())));
+        tvTodayDate.setText(TimeUtil.getDisplayDateFormat(cal));
         setWorkTime(today);
     }
 
     private void setWorkTime(final WorkDay workDay) {
         tvTotalTime.setVisibility(View.VISIBLE);
-        fromToLayout.setVisibility(View.GONE);
+        tvFromToTime.setVisibility(View.GONE);
 
         tvTotalTime.setText(TimeUtil.getTotalWorkTime(workDay.getTimestamp(),
                 pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ? System.currentTimeMillis() :
-                        TimeUtil.getMillisecondsFromString(workDay.getYear(), workDay.getMonth(), workDay.getDate(), workDay.getToTime())));
+                        TimeUtil.getMillisecondsFromString(workDay.getYear(), workDay.getMonth(), workDay.getDate(), "".equals(workDay.getToTime()) || workDay.getToTime() == null ? "00:00" : workDay.getToTime())));
 
         tvTotalTime.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -102,11 +88,12 @@ public class TodayFragment extends BaseFragment {
 
     private void setFromToWorkTime(final WorkDay workDay) {
         tvTotalTime.setVisibility(View.GONE);
-        fromToLayout.setVisibility(View.VISIBLE);
-        tvFromTime.setText(workDay.getFromTime());
-        tvToTime.setText(pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ? TimeUtil.getTime(System.currentTimeMillis()) : workDay.getToTime());
+        tvFromToTime.setVisibility(View.VISIBLE);
+        tvFromToTime.setText(String.format(getString(R.string.daily_work_time), "".equals(workDay.getFromTime()) || workDay.getFromTime() == null ? "00:00" : workDay.getFromTime(),
+                pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ? TimeUtil.getTime(System.currentTimeMillis()) :
+                        ("".equals(workDay.getToTime()) || workDay.getToTime() == null ? "00:00" : workDay.getToTime())));
 
-        fromToLayout.setOnClickListener(new View.OnClickListener() {
+        tvFromToTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 setWorkTime(workDay);

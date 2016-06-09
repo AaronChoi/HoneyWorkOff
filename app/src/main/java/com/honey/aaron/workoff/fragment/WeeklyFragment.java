@@ -9,12 +9,12 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.honey.aaron.workoff.R;
 import com.honey.aaron.workoff.adapter.WeeklyWorkTimeListAdapter;
 import com.honey.aaron.workoff.model.WorkDay;
 import com.honey.aaron.workoff.util.TimeSharedPreferences;
 import com.honey.aaron.workoff.util.TimeUtil;
 import com.honey.aaron.workoff.util.Util;
-import com.sds.aaron.workoff.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -52,13 +52,12 @@ public class WeeklyFragment extends BaseFragment {
         mList = new ArrayList<>();
 
         cal = Calendar.getInstance();
-        Cursor cursor = sqlHelper.select(String.valueOf(cal.get(Calendar.YEAR)), String.valueOf(cal.get(Calendar.MONTH) + 1),
-                String.valueOf(cal.get(Calendar.WEEK_OF_MONTH)), null);
+        Cursor cursor = sqlHelper.select(TimeUtil.getYear(cal.getTimeInMillis()), TimeUtil.getMonth(cal.getTimeInMillis()), TimeUtil.getWeek(cal.getTimeInMillis()), null);
         while(cursor.moveToNext()) {
             Log.i(TAG, "cursor not null");
             mList.add(Util.makeTodayInstance(cursor));
         }
-
+        makeEmptyDataAtDayOff();
         mAdapter = new WeeklyWorkTimeListAdapter(getActivity(), mList, pref);
     }
 
@@ -70,7 +69,7 @@ public class WeeklyFragment extends BaseFragment {
         tvWeeklyWorkTime = (TextView) view.findViewById(R.id.tv_weekly_work_time);
         listWeeklyWork = (ListView) view.findViewById(R.id.list_weekly_work);
 
-        tvWeeklyPeriod.setText(getPeriodString());
+        tvWeeklyPeriod.setText(TimeUtil.getDatePeriodForThisWeek());
         tvWeeklyWorkTime.setText(getWeeklyWorkTime());
 
         listWeeklyWork.setOnLongClickListener(new View.OnLongClickListener(){
@@ -85,27 +84,35 @@ public class WeeklyFragment extends BaseFragment {
         return view;
     }
 
-    private String getPeriodString() {
-        StringBuilder period = new StringBuilder();
-        cal = Calendar.getInstance();
-        // 월요일 날짜 계산..
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
-        period.append(TimeUtil.getDatePeriodForThisWeek(cal)).append(" ~ ");
-        // 일요일 날짜 계산.. calendar 는 일요일부터 시작이므로 월~ 일은 7일을 더해서 다음주 일요일을 계산해야 함
-        cal.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
-        cal.add(Calendar.DATE, 7);
-        period.append(TimeUtil.getDatePeriodForThisWeek(cal));
-
-        return period.toString();
-    }
-
     private String getWeeklyWorkTime() {
         long totalWorkTime = 0;
         for(WorkDay day : mList) {
+            if(day.getTimestamp() == 0) continue;
             totalWorkTime += (TimeUtil.isToday(day.getTimestamp()) && pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ? System.currentTimeMillis() :
                     TimeUtil.getMillisecondsFromString(day.getYear(), day.getMonth(), day.getDate(), day.getToTime())) - day.getTimestamp();
         }
 
         return TimeUtil.getTotalWorkTime(totalWorkTime);
+    }
+
+    private void makeEmptyDataAtDayOff() {
+        if(mList.size() == 7) return;
+
+        cal = Calendar.getInstance();
+        for(int i = 0 ; i < 7 ; i++) {
+            // 토요일 부터 데이터가 있는지 확인
+            if(i < mList.size()) {
+                cal.setTimeInMillis(mList.get(i).getTimestamp());
+                if (cal.get(Calendar.DAY_OF_WEEK) != 7 - i) {
+                    cal.set(Calendar.DAY_OF_WEEK, 7 - i);
+                    mList.add(i, Util.makEmptyWorkDay(cal));
+                    Log.d(TAG, "size : " + mList.size());
+                }
+            } else {
+                cal.set(Calendar.DAY_OF_WEEK, 7 - i);
+                mList.add(i, Util.makEmptyWorkDay(cal));
+                Log.d(TAG, "size : " + mList.size());
+            }
+        }
     }
 }

@@ -14,33 +14,20 @@
 
     <TextView
         style="@style/honey_font_50_grayish_white_bold"
-        android:id="@+id/tv_work_time"
+        android:id="@+id/tv_today_work_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="70dp"
         android:layout_centerInParent="true"
         android:text="3:15" />
 
-    <LinearLayout
-        android:id="@+id/from_to_layout"
+    <TextView
+        style="@style/honey_font_30_grayish_white_bold"
+        android:id="@+id/tv_from_to_time"
+        android:paddingTop="70dp"
+        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:paddingTop="70dp"
-        android:orientation="horizontal"
-        android:visibility="gone" >
+        android:visibility="gone"/>
 
-        <TextView
-            style="@style/honey_font_35_grayish_white_bold"
-            android:id="@+id/tv_from_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            style="@style/honey_font_35_grayish_white_bold"
-            android:id="@+id/tv_to_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"/>
-    </LinearLayout>
 </RelativeLayout>
