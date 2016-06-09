@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">꿀퇴근</string>
+
+    <string name="date">날짜</string>
+    <string name="from_time">시작</string>
+    <string name="to_time">종료</string>
+    <string name="total_time">업무 시간</string>
+    <string name="txt_total_time">%s 업무 중</string>
+
+    <!-- weekly work time view -->
+    <string name="weekly_work_day">%1$s/%2$s (%3$s)</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_refresh">Refresh</string>
+</resources>

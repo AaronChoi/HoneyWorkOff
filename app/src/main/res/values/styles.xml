@@ -1,0 +1,58 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.NoTitleBar">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="honey_font_15_black_40">
+        <item name="android:textSize">15sp</item>
+        <item name="android:textColor">@color/black_40</item>
+    </style>
+
+    <style name="honey_font_17_black_80">
+        <item name="android:textSize">17sp</item>
+        <item name="android:textColor">@color/black_80</item>
+    </style>
+
+    <style name="honey_font_19_pinkish_red">
+        <item name="android:textSize">19sp</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="honey_font_20_pinkish_red_bold">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="honey_font_20_grayish_white_bold">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/grayish_white</item>
+    </style>
+
+    <style name="honey_font_35_grayish_white_bold">
+        <item name="android:textSize">35sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/grayish_white</item>
+    </style>
+
+    <style name="honey_font_50_grayish_white_bold">
+        <item name="android:textSize">50sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/grayish_white</item>
+    </style>
+</resources>

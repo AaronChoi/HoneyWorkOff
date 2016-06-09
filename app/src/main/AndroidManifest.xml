@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.honey.aaron.workoff" >
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".activity.MainActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <service android:name=".service.NotificationServiceForWorkTime"
+            android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
+            <intent-filter>
+                <action android:name="android.service.notification.NotificationListenerService" />
+            </intent-filter>
+        </service>
+
+        <receiver android:name=".activity.MainActivity$BroadcastReceiverForWorkTime"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.honey.aaron.workoff.START_CAL_TIME" />
+                <action android:name="com.honey.aaron.workoff.STOP_CAL_TIME" />
+            </intent-filter>
+        </receiver>
+    </application>
+
+</manifest>

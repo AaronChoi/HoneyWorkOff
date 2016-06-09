@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="45dp"
+    android:paddingLeft="15dp"
+    android:background="@color/pure_white">
+
+    <TextView
+        android:id="@+id/tv_work_day"
+        style="@style/honey_font_15_black_40"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:gravity="center_vertical" />
+
+    <TextView
+        android:id="@+id/tv_from_time"
+        style="@style/honey_font_17_black_80"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginLeft="25dp"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/tv_to_time"
+        style="@style/honey_font_17_black_80"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginLeft="45dp"
+        android:gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/tv_work_time"
+        style="@style/honey_font_19_pinkish_red"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:layout_marginLeft="45dp"
+        android:gravity="center_vertical"/>
+
+</LinearLayout>

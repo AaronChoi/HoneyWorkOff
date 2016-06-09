@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="270dp"
+        android:background="@drawable/bg_main_weekly">
+
+        <TextView
+            android:id="@+id/tv_weekly_period"
+            style="@style/honey_font_20_grayish_white_bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:paddingBottom="70dp"
+            android:gravity="center_horizontal"/>
+
+        <TextView
+            android:id="@+id/tv_weekly_work_time"
+            style="@style/honey_font_20_pinkish_red_bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:paddingLeft="60dp"
+            android:paddingBottom="45dp"/>
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/list_weekly_work"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerHeight="1dp"
+        android:divider="@color/colorPrimary"
+        android:background="@color/pure_white"
+        android:choiceMode="singleChoice"
+        android:longClickable="true"
+        android:listSelector="@android:color/transparent"
+        android:headerDividersEnabled="false"
+        android:footerDividersEnabled="false" />
+
+</LinearLayout>
