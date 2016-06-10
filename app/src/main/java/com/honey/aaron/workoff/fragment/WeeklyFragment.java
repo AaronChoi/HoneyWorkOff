@@ -88,8 +88,8 @@ public class WeeklyFragment extends BaseFragment {
         long totalWorkTime = 0;
         for(WorkDay day : mList) {
             if(day.getTimestamp() == 0) continue;
-            totalWorkTime += (TimeUtil.isToday(day.getTimestamp()) && pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ? System.currentTimeMillis() :
-                    TimeUtil.getMillisecondsFromString(day.getYear(), day.getMonth(), day.getDate(), day.getToTime())) - day.getTimestamp();
+            totalWorkTime += TimeUtil.getGapFromTimestamps(day.getTimestamp(), TimeUtil.isToday(day.getTimestamp()) && pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ?
+                    Calendar.getInstance().getTimeInMillis() : TimeUtil.getMillisecondsFromString(day.getYear(), day.getMonth(), day.getDate(), day.getToTime()));
         }
 
         return TimeUtil.getTotalWorkTime(totalWorkTime);

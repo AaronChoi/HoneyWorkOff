@@ -90,6 +90,32 @@ public class TimeUtil {
     }
 
     /**
+     * gap을 계산하여 휴식시간 계산 후 반환하는 로직
+     */
+    public static long getGapFromTimestamps(long fromTimestamp, long toTimestamp) {
+        // 만일 자정이 넘었다면 하루를 더해줌.
+        if(fromTimestamp > toTimestamp) toTimestamp += 24 * 60 * 60 * 1000;
+
+        // 초를 제거함. 분단위로만 근무시간이 계산됨
+        fromTimestamp -= (fromTimestamp % (60 * 60 * 1000)) % (60 * 1000);
+
+        long gap = toTimestamp - fromTimestamp;
+
+        // 8시간 이상일 경우 1시간 휴식 적용
+        if(gap / (60 * 60 * 1000) >= 8 && gap / (60 * 60 * 1000) <= 12) {
+            gap -= 60 * 60 * 1000;
+        } else if(gap / (60 * 60 * 1000) == 4 && (gap % (60 * 60 * 1000)) / (60 * 1000) <= 30) { // 4시간 ~ 4시간 반 근무 4시간 적용
+            gap = 4 * 60 * 60 * 1000;
+        } else if(gap / (60 * 60 * 1000) < 8  && gap / (60 * 60 * 1000) >= 4) { // 4시간 반 이상일 경우 30분 휴식 적용
+            gap -= 30 * 60 * 1000;
+        } else if(gap / (60 * 60 * 1000) >= 13) { // 12시간 이상일 경우 최대값 12시간 적용
+            gap = 12 * 60 * 60 * 1000;
+        }
+
+        return gap;
+    }
+
+    /**
      * @param totalTimestamp
      * gap 의 합으로 주단위 총 시간을 계산할때 사용함
       */
@@ -117,20 +143,7 @@ public class TimeUtil {
      * 시작과 끝의 timestamp 로 시간을 계산할때 사용함
      */
     public static String getTotalWorkTime(long fromTimestamp, long toTimestamp) {
-        // 만일 자정이 넘었다면 하루를 더해줌.
-        if(fromTimestamp > toTimestamp) toTimestamp += 24 * 60 * 60 * 1000;
-
-        long gap = toTimestamp - fromTimestamp;
-        // 8시간 이상일 경우 1시간 휴식 적용
-        if(gap / (60 * 60 * 1000) >= 8 && gap / (60 * 60 * 1000) <= 12) {
-            gap -= 60 * 60 * 1000;
-        } else if(gap / (60 * 60 * 1000) == 4 && (gap % (60 * 60 * 1000)) / (60 * 1000) <= 30) { // 4시간 ~ 4시간 반 근무 4시간 적용
-            gap = 4 * 60 * 60 * 1000;
-        } else if(gap / (60 * 60 * 1000) < 8  && gap / (60 * 60 * 1000) >= 4) { // 4시간 반 이상일 경우 30분 휴식 적용
-            gap -= 30 * 60 * 1000;
-        } else if(gap / (60 * 60 * 1000) >= 13) { // 12시간 이상일 경우 최대값 12시간 적용
-            gap = 12 * 60 * 60 * 1000;
-        }
+        long gap = getGapFromTimestamps(fromTimestamp, toTimestamp);
 
         // 초로 변환
 //        int sec = (int)(((gap % (60 * 60 * 1000)) % (60 * 1000)) / 1000);
@@ -181,9 +194,14 @@ public class TimeUtil {
     }
 
     public static boolean isToday(long targetTimestamp) {
-        long todayTimestamp = System.currentTimeMillis();
-
-        return getYear(targetTimestamp).equals(getYear(todayTimestamp)) && getMonth(targetTimestamp).equals(getMonth(todayTimestamp))
-                && getDate(targetTimestamp).equals(getDate(todayTimestamp));
+        Calendar calendar = Calendar.getInstance();
+        long todayTimestamp = calendar.getTimeInMillis();
+        calendar.add(Calendar.DATE, -1);
+        long yesterdayTimestamp = calendar.getTimeInMillis();
+        return (getYear(targetTimestamp).equals(getYear(todayTimestamp)) && getMonth(targetTimestamp).equals(getMonth(todayTimestamp))
+                && getDate(targetTimestamp).equals(getDate(todayTimestamp))) ||
+                // 하루가 지나 새벽근무를 할 경우 어제의 날짜와 같으며 시간이 6시 이전일 경우 어제의 근무와 합산하기 때문에 오늘로 본다.
+                (getYear(targetTimestamp).equals(getYear(yesterdayTimestamp)) && getMonth(targetTimestamp).equals(getMonth(yesterdayTimestamp))
+                && getDate(targetTimestamp).equals(getDate(yesterdayTimestamp)) && calendar.get(Calendar.HOUR_OF_DAY) < 6);
     }
 }
