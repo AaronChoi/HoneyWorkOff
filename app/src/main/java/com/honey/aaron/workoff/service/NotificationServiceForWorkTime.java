@@ -15,8 +15,8 @@ public class NotificationServiceForWorkTime extends NotificationListenerService 
     public void onNotificationPosted(StatusBarNotification event) {
         if(EMM_PACKAGE_NAME.equals(event.getPackageName()) || MDM_PACKAGE_NAME.equals(event.getPackageName())) {
             // broadcast receiver 로 워크타임 계산 시작
+            sendBroadcast(new Intent().setAction(MainActivity.BroadcastReceiverForWorkTime.START_CAL_TIME));
         }
-        sendBroadcast(new Intent().setAction(MainActivity.BroadcastReceiverForWorkTime.START_CAL_TIME));
     }
 
     @Override
