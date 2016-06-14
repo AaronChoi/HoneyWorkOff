@@ -54,7 +54,7 @@ public class TodayFragment extends BaseFragment {
         // 오늘 날짜를 가져옴
         Calendar cal = Calendar.getInstance();
 
-        Cursor cursor = sqlHelper.select(TimeUtil.getYear(cal.getTimeInMillis()), TimeUtil.getMonth(cal.getTimeInMillis()), TimeUtil.getWeek(cal.getTimeInMillis()), TimeUtil.getDate(cal.getTimeInMillis()));
+        Cursor cursor = sqlHelper.select(TimeUtil.getYear(cal.getTimeInMillis()), TimeUtil.getMonth(cal.getTimeInMillis()), null, TimeUtil.getDate(cal.getTimeInMillis()));
         Log.i(TAG, "cursor : " + cursor.getCount());
 
         if(cursor.getCount() == 0) { // 오늘 데이터가 없을 경우 빈값을 생성
@@ -74,7 +74,7 @@ public class TodayFragment extends BaseFragment {
         tvTotalTime.setVisibility(View.VISIBLE);
         tvFromToTime.setVisibility(View.GONE);
 
-        tvTotalTime.setText(TimeUtil.getTotalWorkTime(workDay.getTimestamp(),
+        tvTotalTime.setText(workDay.getTimestamp() == 0 ? "00:00" : TimeUtil.getTotalWorkTime(workDay.getTimestamp(),
                 pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ? System.currentTimeMillis() :
                         TimeUtil.getMillisecondsFromString(workDay.getYear(), workDay.getMonth(), workDay.getDate(), "".equals(workDay.getToTime()) || workDay.getToTime() == null ? "00:00" : workDay.getToTime())));
 

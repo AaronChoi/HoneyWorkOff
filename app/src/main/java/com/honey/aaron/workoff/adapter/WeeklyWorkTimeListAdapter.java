@@ -47,6 +47,10 @@ public class WeeklyWorkTimeListAdapter extends BaseAdapter {
         }
     }
 
+    public void setItemList(ArrayList<WorkDay> itemList) {
+        this.itemList = itemList;
+    }
+
     @Override
     public long getItemId(int position) {
         return itemList.indexOf(getItem(position));
@@ -79,7 +83,7 @@ public class WeeklyWorkTimeListAdapter extends BaseAdapter {
         holder.tvToTime.setText(TimeUtil.isToday(item.getTimestamp()) && pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ? TimeUtil.getTime(System.currentTimeMillis()) :
                 item.getToTime() == null || "".equals(item.getToTime()) ? "-" : item.getToTime());
         // work total time
-        holder.tvWorkTime.setText(item.getTimestamp() == 0 ? "00:00" :
+        holder.tvWorkTime.setText(item.getTimestamp() == 0 || (!pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) && item.getToTime() == null) ? "00:00" :
                 TimeUtil.getTotalWorkTime(item.getTimestamp(), TimeUtil.isToday(item.getTimestamp()) && pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ?
                         System.currentTimeMillis() : TimeUtil.getMillisecondsFromString(item.getYear(), item.getMonth(), item.getDate(), item.getToTime())));
 

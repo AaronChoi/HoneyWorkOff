@@ -3,6 +3,7 @@
     android:layout_height="50dp"
     android:paddingLeft="15dp"
     android:paddingRight="15dp"
+    android:longClickable="true"
     android:background="@color/pure_white">
 
     <TextView

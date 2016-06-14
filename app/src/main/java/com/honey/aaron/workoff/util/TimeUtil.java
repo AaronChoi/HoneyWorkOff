@@ -41,7 +41,7 @@ public class TimeUtil {
         try{
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(timestamp);
-            SimpleDateFormat sdf = new SimpleDateFormat("W", Locale.KOREA);
+            SimpleDateFormat sdf = new SimpleDateFormat("w", Locale.KOREA);
             Date currentTimeZone = calendar.getTime();
             return sdf.format(currentTimeZone);
         }catch (Exception e) {

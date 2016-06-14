@@ -133,6 +133,8 @@ public class MainActivity extends AppCompatActivity {
             String date = TimeUtil.getDate(calendar.getTimeInMillis());
             String day = TimeUtil.getDay(calendar.getTimeInMillis());
             String time = TimeUtil.getTime(calendar.getTimeInMillis());
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
 
             /**
              * sql database 입력관련
@@ -141,15 +143,15 @@ public class MainActivity extends AppCompatActivity {
             if(mAction.equals(START_CAL_TIME)) {
                 Cursor cursor = sqlHelper.select(year, month, null, date);
                 if(cursor == null || cursor.getCount() == 0) {  // 오늘의 데이터가 없으면 시작시간으로 생성
-                    long result = sqlHelper.insert(year, month, week, date, day, time, String.valueOf(calendar.getTimeInMillis()));
+                    long result = sqlHelper.insert(year, month, week, date, day, time, null, String.valueOf(calendar.getTimeInMillis()));
                     Log.i("#########", "insert result : " + result);
                 } else {
                     // 오늘의 데이터가 있는 경우 종료시간을 갱신
-                    sqlHelper.update(year, month, date, time);
+                    sqlHelper.update(year, month, date, null, time);
                 }
                 pref.put(TimeSharedPreferences.PREF_IS_WORKING, true);
             } else if(mAction.equals(STOP_CAL_TIME)) {  // STOP 일 경우 work time 중지
-                sqlHelper.update(year, month, date, time);
+                sqlHelper.update(year, month, date, null, time);
                 pref.put(TimeSharedPreferences.PREF_IS_WORKING, false);
             }
         }

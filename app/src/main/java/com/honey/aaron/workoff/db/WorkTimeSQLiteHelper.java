@@ -91,7 +91,9 @@ public class WorkTimeSQLiteHelper extends SQLiteOpenHelper {
      * @param from_time 시작
      * @param timestamp unix timestamp millisecond
      */
-    public long insert(String year, String month, String week, String date, String day, String from_time, String timestamp) {
+    public long insert(String year, String month, String week, String date, String day, String from_time, String to_time, String timestamp) {
+        if(from_time == null && to_time == null) return 0;
+
         db = this.getWritableDatabase();
         values.clear();
         values.put(COLUMN_YEAR, year);
@@ -99,15 +101,19 @@ public class WorkTimeSQLiteHelper extends SQLiteOpenHelper {
         values.put(COLUMN_WEEK, week);
         values.put(COLUMN_DATE, date);
         values.put(COLUMN_DAY, day);
-        values.put(COLUMN_FROM_TIME, from_time);
+        if(from_time != null) values.put(COLUMN_FROM_TIME, from_time);
+        if(to_time != null) values.put(COLUMN_TO_TIME, to_time);
         values.put(COLUMN_TIMESTAMP, timestamp);
         return db.insert(DB_NAME, null, values);
     }
 
-    public long update(String year, String month, String date, String to_time) {
+    public long update(String year, String month, String date, String from_time, String to_time) {
+        if(from_time == null && to_time == null) return 0;
+
         db = this.getWritableDatabase();
         values.clear();
-        values.put("to_time", to_time);
+        if(from_time != null) values.put(COLUMN_FROM_TIME, from_time);
+        if(to_time != null) values.put(COLUMN_TO_TIME, to_time);
         return db.update(DB_NAME, values, COLUMN_YEAR + "=? and " + COLUMN_MONTH + "=? and " + COLUMN_DATE + "=?", new String[]{year, month, date});
     }
 

@@ -14,4 +14,12 @@
 
     <string name="action_settings">Settings</string>
     <string name="action_refresh">Refresh</string>
+
+    <!--시간변경 팝업-->
+    <string name="time_update_title">시간 변경</string>
+
+    <string-array name="time_update_menu">
+        <item>시작 시간</item>
+        <item>종료 시간</item>
+    </string-array>
 </resources>
