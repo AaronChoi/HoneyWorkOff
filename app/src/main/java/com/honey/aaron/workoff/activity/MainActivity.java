@@ -14,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.honey.aaron.workoff.MyApplication;
 import com.honey.aaron.workoff.R;
 import com.honey.aaron.workoff.adapter.ViewPagerAdapter;
 import com.honey.aaron.workoff.db.WorkTimeSQLiteHelper;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        sqlHelper = new WorkTimeSQLiteHelper(this, WorkTimeSQLiteHelper.DB_NAME, null, 1);
+        sqlHelper = new WorkTimeSQLiteHelper(MyApplication.getInstance(), WorkTimeSQLiteHelper.DB_NAME, null, 1);
         pref = new TimeSharedPreferences(this);
 
         pager = (ViewPager) findViewById(R.id.pager);
@@ -149,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
             Log.i("#########", "onReceive() called!");
             String mAction = intent.getAction();
             Calendar calendar = Calendar.getInstance();
+            sqlHelper = new WorkTimeSQLiteHelper(MyApplication.getInstance(), WorkTimeSQLiteHelper.DB_NAME, null, 1);
 
             // 오전 6시 이전일 경우 어제의 업무 시간으로 귀속
             if(calendar.get(Calendar.HOUR_OF_DAY) < 6) {

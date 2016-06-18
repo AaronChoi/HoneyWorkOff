@@ -16,13 +16,28 @@ public class MyApplication extends Application {
     private static final String TAG = MyApplication.class.getSimpleName();
     private Thread.UncaughtExceptionHandler mUncaughtExceptionHandler;
 
+    private static MyApplication myApplication;
+
     @Override
     public void onCreate() {
         mUncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandlerApplication());
 
-
         super.onCreate();
+        myApplication = this;
+    }
+
+    public static MyApplication getInstance() {
+        synchronized (myApplication) {
+            return myApplication;
+        }
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        Log.w(TAG, TAG + " terminated!!");
+        myApplication = null;
     }
 
     /**
