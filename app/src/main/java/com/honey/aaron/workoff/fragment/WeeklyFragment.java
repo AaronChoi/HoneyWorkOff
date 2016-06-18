@@ -29,6 +29,8 @@ import java.util.Locale;
 public class WeeklyFragment extends BaseFragment {
     static WeeklyFragment weeklyFragment;
 
+    private static final String[] excludeDays = {"Sat" , "Sun", "토", "일"};
+
     // list of the work day
     public ArrayList<WorkDay> mList;
     WeeklyWorkTimeListAdapter mAdapter;
@@ -38,7 +40,6 @@ public class WeeklyFragment extends BaseFragment {
     TextView tvWeeklyPeriod;
     TextView tvWeeklyWorkTime;
     ListView listWeeklyWork;
-
 
     public WeeklyFragment() {
         super();
@@ -159,12 +160,25 @@ public class WeeklyFragment extends BaseFragment {
     private String getWeeklyWorkTime() {
         long totalWorkTime = 0;
         for(WorkDay day : mList) {
+            // 비정상 데이터 제외
             if(day.getTimestamp() == 0 || (!pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) && day.getToTime() == null)) continue;
+            // 토, 일요일은 제외
+            if(isExcludeDay(day.getDay())) continue;
+            // gap을 전부 더해서 총 시간 계산
             totalWorkTime += TimeUtil.getGapFromTimestamps(day.getTimestamp(), TimeUtil.isToday(day.getTimestamp()) && pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ?
                     Calendar.getInstance().getTimeInMillis() : TimeUtil.getMillisecondsFromString(day.getYear(), day.getMonth(), day.getDate(), day.getToTime()));
         }
 
         return TimeUtil.getWeeklyTotalWorkTime(totalWorkTime);
+    }
+
+    private boolean isExcludeDay(String day) {
+        for(String excludeDay : excludeDays) {
+            if(excludeDay.equals(day)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void makeEmptyDataAtDayOff() {
