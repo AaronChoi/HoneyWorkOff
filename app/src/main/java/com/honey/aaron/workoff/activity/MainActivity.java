@@ -42,12 +42,19 @@ public class MainActivity extends AppCompatActivity {
         pref = new TimeSharedPreferences(this);
 
         pager = (ViewPager) findViewById(R.id.pager);
-
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
-        tabLayout.addTab(tabLayout.newTab().setIcon(android.R.drawable.arrow_down_float));
-        tabLayout.addTab(tabLayout.newTab().setIcon(android.R.drawable.arrow_down_float));
-        tabLayout.addTab(tabLayout.newTab().setIcon(android.R.drawable.arrow_down_float));
-        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        if(tabLayout != null) {
+            tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_tab_daily_on));
+            tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_tab_weekly_off));
+            tabLayout.addTab(tabLayout.newTab().setIcon(R.drawable.icon_tab_setting_off));
+            tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+            for (int i = 0; i < tabLayout.getTabCount(); i++) {
+                TabLayout.Tab tab = tabLayout.getTabAt(i);
+                if (tab != null) tab.setCustomView(R.layout.view_home_tab);
+            }
+        }
 
         pagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);
@@ -56,11 +63,32 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 pager.setCurrentItem(tab.getPosition());
+                switch (tab.getPosition()) {
+                    case 0 :
+                        tab.setIcon(R.drawable.icon_tab_daily_on);
+                        break;
+                    case 1 :
+                        tab.setIcon(R.drawable.icon_tab_weekly_on);
+                        break;
+                    case 2 :
+                        tab.setIcon(R.drawable.icon_tab_setting_on);
+                        break;
+                }
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-
+                switch (tab.getPosition()) {
+                    case 0 :
+                        tab.setIcon(R.drawable.icon_tab_daily_off);
+                        break;
+                    case 1 :
+                        tab.setIcon(R.drawable.icon_tab_weekly_off);
+                        break;
+                    case 2 :
+                        tab.setIcon(R.drawable.icon_tab_setting_off);
+                        break;
+                }
             }
 
             @Override

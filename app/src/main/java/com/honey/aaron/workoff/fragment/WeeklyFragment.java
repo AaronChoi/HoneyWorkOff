@@ -164,7 +164,7 @@ public class WeeklyFragment extends BaseFragment {
                     Calendar.getInstance().getTimeInMillis() : TimeUtil.getMillisecondsFromString(day.getYear(), day.getMonth(), day.getDate(), day.getToTime()));
         }
 
-        return TimeUtil.getTotalWorkTime(totalWorkTime);
+        return TimeUtil.getWeeklyTotalWorkTime(totalWorkTime);
     }
 
     private void makeEmptyDataAtDayOff() {

@@ -119,22 +119,13 @@ public class TimeUtil {
      * @param totalTimestamp
      * gap 의 합으로 주단위 총 시간을 계산할때 사용함
       */
-    public static String getTotalWorkTime(long totalTimestamp) {
+    public static String getWeeklyTotalWorkTime(long totalTimestamp) {
         // 초로 변환
 //        int sec = (int)(((gap % (60 * 60 * 1000)) % (60 * 1000)) / 1000);
         int min = (int)((totalTimestamp % (60 * 60 * 1000)) / (60 * 1000));
         int hour = (int)(totalTimestamp / (60 * 60 * 1000));
 
-        try{
-            SimpleDateFormat fromFormat = new SimpleDateFormat("H:m", Locale.KOREA);
-            SimpleDateFormat toFormat = new SimpleDateFormat("HH:mm", Locale.KOREA);
-            String timeDiff = hour + ":" + min;
-
-            return toFormat.format(fromFormat.parse(timeDiff, new ParsePosition(0)));
-        }catch (Exception e) {
-            Log.e(TAG, "Failed to calculate time.");
-        }
-        return "04:00";
+        return hour < 10 ? "0" + hour : hour + ":" + (min < 10 ? "0" + min : min);
     }
 
     /**
