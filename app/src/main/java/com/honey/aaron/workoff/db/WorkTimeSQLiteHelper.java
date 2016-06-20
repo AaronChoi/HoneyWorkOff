@@ -73,9 +73,17 @@ public class WorkTimeSQLiteHelper extends SQLiteOpenHelper {
             // 같은 이름으로 테이블 생성
             onCreate(db);
             // 신규 컬럼에 없는 항목 제거
-            columns.retainAll(GetColumns(db, DB_NAME));
+            List<String> newColumns = GetColumns(db, DB_NAME);
+            columns.retainAll(newColumns);
+//            for(String newColumn : newColumns) {
+//                if(!columns.contains(newColumn)) {
+//                    columns.add(newColumn);
+//                }
+//            }
+            Log.d("############", "columns : " + columns.size());
             // 컬럼을 구분자를 통해 모두 연결
             String cols = join(columns, ",");
+            Log.d("############", "cols : " + cols);
             // 백업 테이블에서 모든 데이터를 긁어와서 입력
             db.execSQL(String.format("INSERT INTO %s (%s) SELECT %s from temp_%s", DB_NAME, cols, cols, DB_NAME));
             // 백업 테이블 제거

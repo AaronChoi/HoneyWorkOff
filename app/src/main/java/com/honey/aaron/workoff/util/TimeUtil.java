@@ -128,7 +128,12 @@ public class TimeUtil {
         int min = (int)((totalTimestamp % (60 * 60 * 1000)) / (60 * 1000));
         int hour = (int)(totalTimestamp / (60 * 60 * 1000));
 
-        return hour < 10 ? "0" + hour : hour + ":" + (min < 10 ? "0" + min : min);
+        String totalTime = "";
+        totalTime += hour < 10 ? "0" + hour : hour;
+        totalTime += ":";
+        totalTime += min < 10 ? "0" + min : min;
+
+        return  totalTime;
     }
 
     /**
