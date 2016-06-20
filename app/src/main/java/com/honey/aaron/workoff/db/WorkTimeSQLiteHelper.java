@@ -30,7 +30,8 @@ public class WorkTimeSQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_DAY = "day";
     public static final String COLUMN_FROM_TIME = "from_time";
     public static final String COLUMN_TO_TIME = "to_time";
-    public static final String COLUMN_TIMESTAMP = "timestamp";
+    public static final String COLUMN_FROM_TIMESTAMP = "from_timestamp";
+    public static final String COLUMN_TO_TIMESTAMP = "to_timestamp";
 
     /**
      * Constructor
@@ -47,14 +48,15 @@ public class WorkTimeSQLiteHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String sql = "create table if not exists " + DB_NAME + "(" +
                 "_id INTEGER primary key autoincrement, " +
-                "year TEXT, " +
-                "month TEXT, " +
-                "week TEXT, " +
-                "date TEXT, " +
-                "day TEXT, " +
-                "from_time TEXT, " +
-                "to_time TEXT, " +
-                "timestamp TEXT);";
+                COLUMN_YEAR + " TEXT, " +
+                COLUMN_MONTH + " TEXT, " +
+                COLUMN_WEEK + " TEXT, " +
+                COLUMN_DATE + " TEXT, " +
+                COLUMN_DAY + " TEXT, " +
+                COLUMN_FROM_TIME + " TEXT, " +
+                COLUMN_TO_TIME + " TEXT, " +
+                COLUMN_FROM_TIMESTAMP + " TEXT," +
+                COLUMN_TO_TIMESTAMP + " TEXT);";
 
         db.execSQL(sql);
     }
@@ -67,7 +69,7 @@ public class WorkTimeSQLiteHelper extends SQLiteOpenHelper {
             // column 항목 가져오기
             List<String> columns = GetColumns(db, DB_NAME);
             // 테이블 이름 변경
-            db.execSQL("ALTER table " + DB_NAME + " RENAME TO 'temp_" + DB_NAME);
+            db.execSQL("ALTER table " + DB_NAME + " RENAME TO temp_" + DB_NAME);
             // 같은 이름으로 테이블 생성
             onCreate(db);
             // 신규 컬럼에 없는 항목 제거
@@ -77,7 +79,7 @@ public class WorkTimeSQLiteHelper extends SQLiteOpenHelper {
             // 백업 테이블에서 모든 데이터를 긁어와서 입력
             db.execSQL(String.format("INSERT INTO %s (%s) SELECT %s from temp_%s", DB_NAME, cols, cols, DB_NAME));
             // 백업 테이블 제거
-            db.execSQL("drop table if exists 'temp_" + DB_NAME);
+            db.execSQL("drop table if exists temp_" + DB_NAME);
         }
     }
 
@@ -89,9 +91,9 @@ public class WorkTimeSQLiteHelper extends SQLiteOpenHelper {
      * @param date 일
      * @param day 요일
      * @param from_time 시작
-     * @param timestamp unix timestamp millisecond
+     * @param from_timestamp unix timestamp millisecond
      */
-    public long insert(String year, String month, String week, String date, String day, String from_time, String to_time, String timestamp) {
+    public long insert(String year, String month, String week, String date, String day, String from_time, String to_time, String from_timestamp, String to_timestamp) {
         if(from_time == null && to_time == null) return 0;
 
         db = this.getWritableDatabase();
@@ -103,17 +105,20 @@ public class WorkTimeSQLiteHelper extends SQLiteOpenHelper {
         values.put(COLUMN_DAY, day);
         if(from_time != null) values.put(COLUMN_FROM_TIME, from_time);
         if(to_time != null) values.put(COLUMN_TO_TIME, to_time);
-        values.put(COLUMN_TIMESTAMP, timestamp);
+        values.put(COLUMN_FROM_TIMESTAMP, from_timestamp);
+        values.put(COLUMN_TO_TIMESTAMP, to_timestamp);
         return db.insert(DB_NAME, null, values);
     }
 
-    public long update(String year, String month, String date, String from_time, String to_time) {
+    public long update(String year, String month, String date, String from_time, String to_time, String from_timestamps, String to_timestamps) {
         if(from_time == null && to_time == null) return 0;
 
         db = this.getWritableDatabase();
         values.clear();
         if(from_time != null) values.put(COLUMN_FROM_TIME, from_time);
         if(to_time != null) values.put(COLUMN_TO_TIME, to_time);
+        if(from_timestamps != null) values.put(COLUMN_FROM_TIMESTAMP, from_timestamps);
+        if(to_timestamps != null) values.put(COLUMN_TO_TIMESTAMP, to_timestamps);
         return db.update(DB_NAME, values, COLUMN_YEAR + "=? and " + COLUMN_MONTH + "=? and " + COLUMN_DATE + "=?", new String[]{year, month, date});
     }
 

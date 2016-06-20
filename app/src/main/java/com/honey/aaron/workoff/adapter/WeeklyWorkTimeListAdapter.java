@@ -80,12 +80,12 @@ public class WeeklyWorkTimeListAdapter extends BaseAdapter {
         // work from time
         holder.tvFromTime.setText(item.getFromTime() == null || "".equals(item.getFromTime()) ? "-" : item.getFromTime());
         // work to time
-        holder.tvToTime.setText(TimeUtil.isToday(item.getTimestamp()) && pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ? TimeUtil.getTime(System.currentTimeMillis()) :
+        holder.tvToTime.setText(TimeUtil.isToday(item.getFromTimestamp()) && pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ? TimeUtil.getTime(System.currentTimeMillis()) :
                 item.getToTime() == null || "".equals(item.getToTime()) ? "-" : item.getToTime());
         // work total time
-        holder.tvWorkTime.setText(item.getTimestamp() == 0 || (!pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) && item.getToTime() == null) ? "00:00" :
-                TimeUtil.getTotalWorkTime(item.getTimestamp(), TimeUtil.isToday(item.getTimestamp()) && pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ?
-                        System.currentTimeMillis() : TimeUtil.getMillisecondsFromString(item.getYear(), item.getMonth(), item.getDate(), item.getToTime())));
+        holder.tvWorkTime.setText(item.getFromTimestamp() == 0 || (!pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) && item.getToTime() == null) ? "00:00" :
+                TimeUtil.getTotalWorkTime(item.getFromTimestamp(), TimeUtil.isToday(item.getFromTimestamp()) && pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ?
+                        System.currentTimeMillis() : item.getToTimestamp()));
 
         return convertView;
     }

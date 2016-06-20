@@ -93,6 +93,8 @@ public class TimeUtil {
      * gap을 계산하여 휴식시간 계산 후 반환하는 로직
      */
     public static long getGapFromTimestamps(long fromTimestamp, long toTimestamp) {
+        if(fromTimestamp == 0 || toTimestamp == 0) return 0;
+
         // 만일 자정이 넘었다면 하루를 더해줌.
         if(fromTimestamp > toTimestamp) toTimestamp += 24 * 60 * 60 * 1000;
 
@@ -120,6 +122,7 @@ public class TimeUtil {
      * gap 의 합으로 주단위 총 시간을 계산할때 사용함
       */
     public static String getWeeklyTotalWorkTime(long totalTimestamp) {
+        if(totalTimestamp == 0) return "00:00";
         // 초로 변환
 //        int sec = (int)(((gap % (60 * 60 * 1000)) % (60 * 1000)) / 1000);
         int min = (int)((totalTimestamp % (60 * 60 * 1000)) / (60 * 1000));
@@ -134,10 +137,9 @@ public class TimeUtil {
      * 시작과 끝의 timestamp 로 시간을 계산할때 사용함
      */
     public static String getTotalWorkTime(long fromTimestamp, long toTimestamp) {
-        long gap = getGapFromTimestamps(fromTimestamp, toTimestamp);
+        if(fromTimestamp == 0 || toTimestamp == 0) return "00:00";
 
-        // 초로 변환
-//        int sec = (int)(((gap % (60 * 60 * 1000)) % (60 * 1000)) / 1000);
+        long gap = getGapFromTimestamps(fromTimestamp, toTimestamp);
         int min = (int)((gap % (60 * 60 * 1000)) / (60 * 1000));
         int hour = (int)(gap / (60 * 60 * 1000));
 

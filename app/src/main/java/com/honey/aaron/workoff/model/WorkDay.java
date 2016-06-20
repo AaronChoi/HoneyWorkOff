@@ -8,7 +8,8 @@ public class WorkDay {
     private String day;
     private String fromTime;
     private String toTime;
-    private long timestamp;
+    private long fromTimestamp;
+    private long toTimestamp;
 
     public String getYear() {
         return year;
@@ -66,11 +67,19 @@ public class WorkDay {
         this.toTime = toTime;
     }
 
-    public long getTimestamp() {
-        return timestamp;
+    public long getFromTimestamp() {
+        return fromTimestamp;
     }
 
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
+    public void setFromTimestamp(long fromTimestamp) {
+        this.fromTimestamp = fromTimestamp;
+    }
+
+    public long getToTimestamp() {
+        return toTimestamp;
+    }
+
+    public void setToTimestamp(long toTimestamp) {
+        this.toTimestamp = toTimestamp;
     }
 }

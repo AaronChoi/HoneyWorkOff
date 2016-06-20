@@ -11,23 +11,28 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="120dp"
         android:text="2016.06.01"/>
-
-    <TextView
-        style="@style/honey_font_50_grayish_white_bold"
-        android:id="@+id/tv_today_work_time"
+    
+    <ViewFlipper
+        android:id="@+id/viewFlipper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="70dp"
         android:layout_centerInParent="true"
-        android:text="3:15" />
+        android:addStatesFromChildren="true">
 
-    <TextView
-        style="@style/honey_font_30_grayish_white_bold"
-        android:id="@+id/tv_from_to_time"
-        android:paddingTop="70dp"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"/>
+        <TextView
+            style="@style/honey_font_50_grayish_white_bold"
+            android:id="@+id/tv_today_work_time"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            style="@style/honey_font_30_grayish_white_bold"
+            android:id="@+id/tv_from_to_time"
+            android:layout_marginTop="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </ViewFlipper>
 
 </RelativeLayout>

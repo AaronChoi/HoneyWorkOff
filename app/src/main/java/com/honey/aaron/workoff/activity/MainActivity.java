@@ -173,15 +173,15 @@ public class MainActivity extends AppCompatActivity {
             if(mAction.equals(START_CAL_TIME)) {
                 Cursor cursor = sqlHelper.select(year, month, null, date);
                 if(cursor == null || cursor.getCount() == 0) {  // 오늘의 데이터가 없으면 시작시간으로 생성
-                    long result = sqlHelper.insert(year, month, week, date, day, time, null, String.valueOf(calendar.getTimeInMillis()));
+                    long result = sqlHelper.insert(year, month, week, date, day, time, null, String.valueOf(calendar.getTimeInMillis()), "0");
                     Log.i("#########", "insert result : " + result);
                 } else {
                     // 오늘의 데이터가 있는 경우 종료시간을 갱신
-                    sqlHelper.update(year, month, date, null, time);
+                    sqlHelper.update(year, month, date, null, time, null, String.valueOf(calendar.getTimeInMillis()));
                 }
                 pref.put(TimeSharedPreferences.PREF_IS_WORKING, true);
-            } else if(mAction.equals(STOP_CAL_TIME)) {  // STOP 일 경우 work time 중지
-                sqlHelper.update(year, month, date, null, time);
+            } else if(mAction.equals(STOP_CAL_TIME)) {  // STOP 일 경우 종료시간 갱신 후 work time 중지
+                sqlHelper.update(year, month, date, null, time, null, String.valueOf(calendar.getTimeInMillis()));
                 pref.put(TimeSharedPreferences.PREF_IS_WORKING, false);
             }
         }

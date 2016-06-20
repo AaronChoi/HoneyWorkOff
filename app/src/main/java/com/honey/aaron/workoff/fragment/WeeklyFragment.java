@@ -103,16 +103,16 @@ public class WeeklyFragment extends BaseFragment {
                                                 String fromTime = format.format(cal.getTime());
                                                 long timestamp = TimeUtil.getMillisecondsFromString(day.getYear(), day.getMonth(), day.getDate(), fromTime);
                                                 mList.get(position).setFromTime(fromTime);
-                                                mList.get(position).setTimestamp(timestamp);
+                                                mList.get(position).setFromTimestamp(timestamp);
                                                 mAdapter.setItemList(mList);
                                                 mAdapter.notifyDataSetChanged();
                                                 tvWeeklyWorkTime.setText(getWeeklyWorkTime());
                                                 // db update
                                                 Cursor cursor = sqlHelper.select(day.getYear(), day.getMonth(), null, day.getDate());
                                                 if(cursor.getCount() > 0) {
-                                                    sqlHelper.update(day.getYear(), day.getMonth(), day.getDate(), fromTime, null);
+                                                    sqlHelper.update(day.getYear(), day.getMonth(), day.getDate(), fromTime, null, String.valueOf(timestamp), null);
                                                 } else {
-                                                    sqlHelper.insert(day.getYear(), day.getMonth(), day.getWeek(), day.getDate(), day.getDay(), fromTime, null, String.valueOf(timestamp));
+                                                    sqlHelper.insert(day.getYear(), day.getMonth(), day.getWeek(), day.getDate(), day.getDay(), fromTime, null, String.valueOf(timestamp), "0");
                                                 }
                                             }
                                         }, day.getFromTime() == null ? 0 : Integer.parseInt(day.getFromTime().split(":")[0])
@@ -129,16 +129,18 @@ public class WeeklyFragment extends BaseFragment {
                                                 cal.set(Calendar.MINUTE, minute);
                                                 SimpleDateFormat format = new SimpleDateFormat("HH:mm", Locale.KOREA);
                                                 String toTime = format.format(cal.getTime());
+                                                long timestamp = TimeUtil.getMillisecondsFromString(day.getYear(), day.getMonth(), day.getDate(), toTime);
                                                 mList.get(position).setToTime(toTime);
+                                                mList.get(position).setToTimestamp(timestamp);
                                                 mAdapter.setItemList(mList);
                                                 mAdapter.notifyDataSetChanged();
                                                 tvWeeklyWorkTime.setText(getWeeklyWorkTime());
                                                 // db update
                                                 Cursor cursor = sqlHelper.select(day.getYear(), day.getMonth(), null, day.getDate());
                                                 if(cursor.getCount() > 0) {
-                                                    sqlHelper.update(day.getYear(), day.getMonth(), day.getDate(), null, toTime);
+                                                    sqlHelper.update(day.getYear(), day.getMonth(), day.getDate(), null, toTime, null, String.valueOf(timestamp));
                                                 } else {
-                                                    sqlHelper.insert(day.getYear(), day.getMonth(), day.getWeek(), day.getDate(), day.getDay(), null, toTime, "0");
+                                                    sqlHelper.insert(day.getYear(), day.getMonth(), day.getWeek(), day.getDate(), day.getDay(), null, toTime, "0", String.valueOf(timestamp));
                                                 }
                                             }
                                         }, day.getToTime() == null ? 0 : Integer.parseInt(day.getToTime().split(":")[0])
@@ -161,12 +163,12 @@ public class WeeklyFragment extends BaseFragment {
         long totalWorkTime = 0;
         for(WorkDay day : mList) {
             // 비정상 데이터 제외
-            if(day.getTimestamp() == 0 || (!pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) && day.getToTime() == null)) continue;
+            if(day.getFromTimestamp() == 0 || (!pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) && day.getToTime() == null)) continue;
             // 토, 일요일은 제외
             if(isExcludeDay(day.getDay())) continue;
             // gap을 전부 더해서 총 시간 계산
-            totalWorkTime += TimeUtil.getGapFromTimestamps(day.getTimestamp(), TimeUtil.isToday(day.getTimestamp()) && pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ?
-                    Calendar.getInstance().getTimeInMillis() : TimeUtil.getMillisecondsFromString(day.getYear(), day.getMonth(), day.getDate(), day.getToTime()));
+            totalWorkTime += TimeUtil.getGapFromTimestamps(day.getFromTimestamp(), TimeUtil.isToday(day.getFromTimestamp()) && pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ?
+                    Calendar.getInstance().getTimeInMillis() : day.getToTimestamp());
         }
 
         return TimeUtil.getWeeklyTotalWorkTime(totalWorkTime);
@@ -188,7 +190,7 @@ public class WeeklyFragment extends BaseFragment {
         for(int i = 0 ; i < 7 ; i++) {
             // 토요일 부터 데이터가 있는지 확인
             if(i < mList.size()) {
-                cal.setTimeInMillis(mList.get(i).getTimestamp());
+                cal.setTimeInMillis(mList.get(i).getFromTimestamp());
                 if (cal.get(Calendar.DAY_OF_WEEK) != 7 - i) {
                     cal.set(Calendar.DAY_OF_WEEK, 7 - i);
                     mList.add(i, Util.makEmptyWorkDay(cal));

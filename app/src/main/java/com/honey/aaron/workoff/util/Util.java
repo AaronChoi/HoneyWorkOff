@@ -22,7 +22,8 @@ public class Util {
         day.setDay(cursor.getString(cursor.getColumnIndex(WorkTimeSQLiteHelper.COLUMN_DAY)));
         day.setFromTime(cursor.getString(cursor.getColumnIndex(WorkTimeSQLiteHelper.COLUMN_FROM_TIME)));
         day.setToTime(cursor.getString(cursor.getColumnIndex(WorkTimeSQLiteHelper.COLUMN_TO_TIME)));
-        day.setTimestamp(Long.parseLong(cursor.getString(cursor.getColumnIndex(WorkTimeSQLiteHelper.COLUMN_TIMESTAMP))));
+        day.setFromTimestamp(Long.parseLong(cursor.getString(cursor.getColumnIndex(WorkTimeSQLiteHelper.COLUMN_FROM_TIMESTAMP))));
+        day.setToTimestamp(Long.parseLong(cursor.getString(cursor.getColumnIndex(WorkTimeSQLiteHelper.COLUMN_TO_TIMESTAMP))));
         Log.i(TAG, "year : " + day.getYear() +
                 "month : " + day.getMonth() +
                 "week : " + day.getWeek() +
@@ -30,7 +31,8 @@ public class Util {
                 "day : " + day.getDay() +
                 "from_time : " + day.getFromTime() +
                 "to_time : " + day.getToTime() +
-                "timestamp : " + day.getTimestamp());
+                "from_timestamp : " + day.getFromTimestamp() +
+                "to_timestamp : " + day.getToTimestamp());
 
         return day;
     }
@@ -42,7 +44,8 @@ public class Util {
         day.setWeek(TimeUtil.getWeek(cal.getTimeInMillis()));
         day.setDay(TimeUtil.getDay(cal.getTimeInMillis()));
         day.setDate(TimeUtil.getDate(cal.getTimeInMillis()));
-        day.setTimestamp(0);
+        day.setFromTimestamp(0);
+        day.setToTimestamp(0);
 
         return day;
     }
