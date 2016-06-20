@@ -203,4 +203,11 @@ public class WeeklyFragment extends BaseFragment {
             }
         }
     }
+
+    public void refreshViews() {
+        // 오늘 데이터 변경
+        mAdapter.notifyDataSetChanged();
+        // 총 시간 변경
+        tvWeeklyWorkTime.setText(getWeeklyWorkTime());
+    }
 }

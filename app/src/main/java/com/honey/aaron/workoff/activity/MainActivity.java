@@ -18,10 +18,14 @@ import com.honey.aaron.workoff.MyApplication;
 import com.honey.aaron.workoff.R;
 import com.honey.aaron.workoff.adapter.ViewPagerAdapter;
 import com.honey.aaron.workoff.db.WorkTimeSQLiteHelper;
+import com.honey.aaron.workoff.fragment.TodayFragment;
+import com.honey.aaron.workoff.fragment.WeeklyFragment;
 import com.honey.aaron.workoff.util.TimeSharedPreferences;
 import com.honey.aaron.workoff.util.TimeUtil;
 
 import java.util.Calendar;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -29,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static TimeSharedPreferences pref;
     private static WorkTimeSQLiteHelper sqlHelper;
+    private Timer timer;
 
     ViewPagerAdapter pagerAdapter;
     ViewPager pager;
@@ -41,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
         sqlHelper = new WorkTimeSQLiteHelper(MyApplication.getInstance(), WorkTimeSQLiteHelper.DB_NAME, null, 1);
         pref = new TimeSharedPreferences(this);
+        timer = new Timer();
 
         pager = (ViewPager) findViewById(R.id.pager);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
@@ -97,6 +103,28 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if(pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false)) {
+                    Log.d(TAG, "fragment call : " + getSupportFragmentManager().getFragments().size());
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            runOnUiThread(new Runnable(){
+                                @Override
+                                public void run() {
+                                    Log.d(TAG, "timer ticking... refresh times...");
+                                    ((TodayFragment) pagerAdapter.getItem(0)).initTimeLayout();
+                                    ((WeeklyFragment) pagerAdapter.getItem(1)).refreshViews();
+                                }
+                            });
+                        }
+                    }).start();
+                }
+            }
+        }, (60 - Calendar.getInstance().get(Calendar.SECOND)) * 1000, 60000);// 정시 분에 시작
 
         if (!isContainedInNotificationListeners(getApplicationContext())) {
             makeDialogPopup();
@@ -185,5 +213,12 @@ public class MainActivity extends AppCompatActivity {
                 pref.put(TimeSharedPreferences.PREF_IS_WORKING, false);
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.d(TAG, "onDestroy() called and timer canceled.");
+        timer.cancel();
+        super.onDestroy();
     }
 }

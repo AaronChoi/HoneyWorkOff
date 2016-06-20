@@ -55,7 +55,7 @@ public class WorkTimeSQLiteHelper extends SQLiteOpenHelper {
                 COLUMN_DAY + " TEXT, " +
                 COLUMN_FROM_TIME + " TEXT, " +
                 COLUMN_TO_TIME + " TEXT, " +
-                COLUMN_FROM_TIMESTAMP + " TEXT," +
+                COLUMN_FROM_TIMESTAMP + " TEXT, " +
                 COLUMN_TO_TIMESTAMP + " TEXT);";
 
         db.execSQL(sql);
@@ -65,11 +65,11 @@ public class WorkTimeSQLiteHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // db = 적용할 db, old = 구버전, new = 신버전
         Log.d("##########", "db upgrade");
-        if(newVersion > oldVersion) {
+        if(newVersion != oldVersion) {
             // column 항목 가져오기
             List<String> columns = GetColumns(db, DB_NAME);
             // 테이블 이름 변경
-            db.execSQL("ALTER table " + DB_NAME + " RENAME TO temp_" + DB_NAME);
+            db.execSQL("ALTER TABLE " + DB_NAME + " RENAME TO temp_" + DB_NAME);
             // 같은 이름으로 테이블 생성
             onCreate(db);
             // 신규 컬럼에 없는 항목 제거
@@ -85,7 +85,7 @@ public class WorkTimeSQLiteHelper extends SQLiteOpenHelper {
             String cols = join(columns, ",");
             Log.d("############", "cols : " + cols);
             // 백업 테이블에서 모든 데이터를 긁어와서 입력
-            db.execSQL(String.format("INSERT INTO %s (%s) SELECT %s from temp_%s", DB_NAME, cols, cols, DB_NAME));
+            db.execSQL(String.format("INSERT INTO %s (%s) SELECT %s FROM temp_%s", DB_NAME, cols, cols, DB_NAME));
             // 백업 테이블 제거
             db.execSQL("drop table if exists temp_" + DB_NAME);
         }

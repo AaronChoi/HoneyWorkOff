@@ -58,6 +58,11 @@ public class TodayFragment extends BaseFragment {
         // 오늘 날짜를 가져옴
         Calendar cal = Calendar.getInstance();
 
+        // 오전 6시 이전일 경우 어제의 업무 시간으로 귀속
+        if(cal.get(Calendar.HOUR_OF_DAY) < 6) {
+            cal.add(Calendar.DATE, -1);
+        }
+
         Cursor cursor = sqlHelper.select(TimeUtil.getYear(cal.getTimeInMillis()), TimeUtil.getMonth(cal.getTimeInMillis()), null, TimeUtil.getDate(cal.getTimeInMillis()));
         Log.i(TAG, "cursor : " + cursor.getCount());
 
@@ -77,6 +82,10 @@ public class TodayFragment extends BaseFragment {
                 AnimationFactory.flipTransition(timeViewAnimator, AnimationFactory.FlipDirection.LEFT_RIGHT);
             }
         });
+        initTimeLayout();
+    }
+
+    public void initTimeLayout() {
         tvTotalTime.setText(today.getFromTimestamp() == 0 ? "00:00" : TimeUtil.getTotalWorkTime(today.getFromTimestamp(),
                 pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) ? System.currentTimeMillis() : today.getToTimestamp()));
         tvFromToTime.setText(String.format(getString(R.string.daily_work_time), "".equals(today.getFromTime()) || today.getFromTime() == null ? "00:00" : today.getFromTime(),
