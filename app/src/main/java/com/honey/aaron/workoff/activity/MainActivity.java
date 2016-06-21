@@ -20,6 +20,7 @@ import com.honey.aaron.workoff.adapter.ViewPagerAdapter;
 import com.honey.aaron.workoff.db.WorkTimeSQLiteHelper;
 import com.honey.aaron.workoff.fragment.TodayFragment;
 import com.honey.aaron.workoff.fragment.WeeklyFragment;
+import com.honey.aaron.workoff.service.NotificationServiceForWorkTime;
 import com.honey.aaron.workoff.util.TimeSharedPreferences;
 import com.honey.aaron.workoff.util.TimeUtil;
 
@@ -125,6 +126,11 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }, (60 - Calendar.getInstance().get(Calendar.SECOND)) * 1000, 60000);// 정시 분에 시작
+
+        if(!pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) && NotificationServiceForWorkTime.getInstance().isActivateObservedPackage()) {
+            Log.d(TAG, "Working flag is false but, emm or mdm package is enabled.");
+            sendBroadcast(new Intent().setAction(MainActivity.BroadcastReceiverForWorkTime.START_CAL_TIME));;
+        }
 
         if (!isContainedInNotificationListeners(getApplicationContext())) {
             makeDialogPopup();
