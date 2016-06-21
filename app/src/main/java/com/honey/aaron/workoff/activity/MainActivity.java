@@ -127,13 +127,17 @@ public class MainActivity extends AppCompatActivity {
             }
         }, (60 - Calendar.getInstance().get(Calendar.SECOND)) * 1000, 60000);// 정시 분에 시작
 
-        if(!pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false) && NotificationServiceForWorkTime.getInstance().isActivateObservedPackage()) {
-            Log.d(TAG, "Working flag is false but, emm or mdm package is enabled.");
-            sendBroadcast(new Intent().setAction(MainActivity.BroadcastReceiverForWorkTime.START_CAL_TIME));;
-        }
-
         if (!isContainedInNotificationListeners(getApplicationContext())) {
             makeDialogPopup();
+        }
+    }
+
+    // 최초 실행 시 업무중이면 활성화..
+    public void checkIsWorkingWhenObservedPackageEnabled() {
+        if(!pref.getValue(TimeSharedPreferences.PREF_IS_WORKING, false)) {
+            Intent intent = new Intent(this, NotificationServiceForWorkTime.class);
+            intent.putExtra("call_from", "MainActivity");
+            startService(intent);
         }
     }
 
@@ -171,6 +175,8 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode == REQUEST_SETTING_ACTIVITY) {
             if (!isContainedInNotificationListeners(getApplicationContext())) {
                 makeDialogPopup();
+            } else {
+                checkIsWorkingWhenObservedPackageEnabled();
             }
         }
     }
