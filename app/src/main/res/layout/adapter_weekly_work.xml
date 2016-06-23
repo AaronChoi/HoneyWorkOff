@@ -17,11 +17,11 @@
     <TextView
         android:id="@+id/tv_from_time"
         style="@style/honey_font_17_black_80"
-        android:layout_width="wrap_content"
+        android:layout_width="45dp"
         android:layout_height="50dp"
         android:layout_marginLeft="25dp"
         android:layout_toRightOf="@id/tv_work_day"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:text="09:00"/>
 
     <TextView
@@ -37,9 +37,9 @@
     <TextView
         android:id="@+id/tv_to_time"
         style="@style/honey_font_17_black_80"
-        android:layout_width="wrap_content"
+        android:layout_width="45dp"
         android:layout_height="50dp"
-        android:gravity="center_vertical"
+        android:gravity="center"
         android:layout_marginRight="50dp"
         android:layout_toLeftOf="@id/tv_work_time"
         android:text="18:00"/>
