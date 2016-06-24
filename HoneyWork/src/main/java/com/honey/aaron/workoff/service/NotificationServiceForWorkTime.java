@@ -6,7 +6,7 @@ import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.honey.aaron.workoff.activity.MainActivity;
+import com.honey.aaron.workoff.receiver.BroadcastReceiverForWorkTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class NotificationServiceForWorkTime extends NotificationListenerService 
         for(StatusBarNotification sbn : getActiveNotifications()){
             if(OBSERVE_PACKAGE.contains(sbn.getPackageName())) {
                 Log.d(TAG, "Working flag is false but, emm or mdm package is enabled.");
-                sendBroadcast(new Intent().setAction(MainActivity.BroadcastReceiverForWorkTime.START_CAL_TIME));
+                sendBroadcast(new Intent().setAction(BroadcastReceiverForWorkTime.START_CAL_TIME));
             }
         }
         return super.onStartCommand(intent, flags, startId);
@@ -41,7 +41,7 @@ public class NotificationServiceForWorkTime extends NotificationListenerService 
     public void onNotificationPosted(StatusBarNotification event) {
         if(EMM_PACKAGE_NAME.equals(event.getPackageName()) || MDM_PACKAGE_NAME.equals(event.getPackageName())) {
             // broadcast receiver 로 워크타임 계산 시작
-            sendBroadcast(new Intent().setAction(MainActivity.BroadcastReceiverForWorkTime.START_CAL_TIME));
+            sendBroadcast(new Intent().setAction(BroadcastReceiverForWorkTime.START_CAL_TIME));
         }
     }
 
@@ -49,7 +49,7 @@ public class NotificationServiceForWorkTime extends NotificationListenerService 
     public void onNotificationRemoved(StatusBarNotification event) {
         if(EMM_PACKAGE_NAME.equals(event.getPackageName()) || MDM_PACKAGE_NAME.equals(event.getPackageName())) {
             // broadcast receiver 로 워크타임 계산 중지
-            sendBroadcast(new Intent().setAction(MainActivity.BroadcastReceiverForWorkTime.STOP_CAL_TIME));
+            sendBroadcast(new Intent().setAction(BroadcastReceiverForWorkTime.STOP_CAL_TIME));
         }
     }
 }

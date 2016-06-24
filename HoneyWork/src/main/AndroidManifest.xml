@@ -28,7 +28,7 @@
             </intent-filter>
         </service>
 
-        <receiver android:name=".activity.MainActivity$BroadcastReceiverForWorkTime"
+        <receiver android:name=".receiver.BroadcastReceiverForWorkTime"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.honey.aaron.workoff.START_CAL_TIME" />
