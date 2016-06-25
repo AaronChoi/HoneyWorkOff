@@ -36,7 +36,6 @@ public class BroadcastReceiverForWorkTime extends BroadcastReceiver {
         Log.i(TAG, "onReceive() called!");
         String mAction = intent.getAction();
         Calendar calendar = Calendar.getInstance();
-        sqlHelper = new WorkTimeSQLiteHelper(MyApplication.getInstance(), WorkTimeSQLiteHelper.DB_NAME, null, 1);
 
         // 오전 6시 이전일 경우 어제의 업무 시간으로 귀속
         if(calendar.get(Calendar.HOUR_OF_DAY) < 6) {
