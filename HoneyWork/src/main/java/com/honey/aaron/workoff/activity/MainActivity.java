@@ -171,12 +171,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onResume() {
-        Log.d(TAG, "onResume() called and update fragment's work time.");
-        updateFragmentViewForWorkTime();
-        super.onResume();
-    }
+//    @Override
+//    protected void onResume() {
+//        Log.d(TAG, "onResume() called..");
+//        if(pagerAdapter != null) {
+//            Log.d(TAG, "update fragment's work time.");
+//            updateFragmentViewForWorkTime();
+//        }
+//        super.onResume();
+//    }
 
     @Override
     protected void onDestroy() {
